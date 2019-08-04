@@ -4,10 +4,28 @@ using UnityEngine;
 
 public class ForthAttackState : State {
 
+    private StateMachine stateMachine;
+
+    private Animator playerAnimator;
+
+
+
+    private GameObject m_Player;
+
+    private void Start()
+    {
+        m_Player = this.gameObject;
+
+        playerAnimator = m_Player.GetComponent<Animator>();
+
+        stateMachine = m_Player.GetComponent<PlayerController>().playerStateMachine;
+    }
 
     public override void Enter(GameObject Player)
     {
+
         Player.GetComponent<Animator>().SetFloat("ForthAttack", 2.0f);
+
     }
 
     public override void Execute(GameObject Player)
@@ -23,16 +41,15 @@ public class ForthAttackState : State {
     public void ExitForth()
     {
 
-        if (PlayerController.playerStateMachine.m_pCurrentState.GetType() == typeof(ForthAttackState))
+        if (stateMachine.m_pCurrentState.GetType() == typeof(ForthAttackState))
         {
-            PlayerController.playerStateMachine.m_pCurrentState = GameObject.Find("StateManager").GetComponent<FightIdleState>();
+            stateMachine.m_pCurrentState = m_Player.GetComponent<FightIdleState>();
 
-            Debug.LogWarning("4");
         }
     }
 
     public void ForthdFinish()
     {
-        GameObject.Find("Male").GetComponent<Animator>().SetFloat("ForthAttack", 0.0f);
+        playerAnimator.SetFloat("ForthAttack", 0.0f);
     }
 }

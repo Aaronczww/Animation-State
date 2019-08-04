@@ -4,10 +4,24 @@ using UnityEngine;
 
 public class SecondAttackState : State {
 
+    private Animator playerAnimator;
+
+    private StateMachine stateMachine;
+
+    private GameObject m_Player;
+
+    private void Start()
+    {
+        m_Player = this.gameObject;
+
+        playerAnimator = m_Player.GetComponent<Animator>();
+
+        stateMachine = m_Player.GetComponent<PlayerController>().playerStateMachine;
+    }
     public override void Enter(GameObject Player)
     {
-        Player.GetComponent<Animator>().SetFloat("SecondAttack", 2.0f);
 
+        Player.GetComponent<Animator>().SetFloat("SecondAttack", 2.0f);
     }
 
     public override void Execute(GameObject Player)
@@ -21,18 +35,19 @@ public class SecondAttackState : State {
 
     public void ExitSecond()
     {
+        
 
-        if (PlayerController.playerStateMachine.m_pCurrentState.GetType() == typeof(SecondAttackState))
+        if (stateMachine.m_pCurrentState.GetType() == typeof(SecondAttackState))
         {
-            PlayerController.playerStateMachine.m_pCurrentState = GameObject.Find("StateManager").GetComponent<FightIdleState>();
+            stateMachine.m_pCurrentState = m_Player.GetComponent<FightIdleState>();
 
-            Debug.LogWarning("2");
+
         }
 
     }
 
     public void SecondFinish()
     {
-        GameObject.Find("Male").GetComponent<Animator>().SetFloat("SecondAttack", 0.0f);
+        playerAnimator.SetFloat("SecondAttack", 0.0f);
     }
 }

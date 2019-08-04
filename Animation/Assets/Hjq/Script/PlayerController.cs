@@ -3,8 +3,8 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour {
 
-    public static StateMachine playerStateMachine;
-    public static  Animator animator;
+    public StateMachine playerStateMachine;
+    public Animator animator;
 
 
     public float Speed;
@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour {
 
     public State CurrentState;
 
-    public GameObject StateManager;
+    //public GameObject StateManager;
 
     public static bool speedUp = false;
 
@@ -43,7 +43,7 @@ public class PlayerController : MonoBehaviour {
 
     public bool _canJump = true;
 
-    public float jumpCdTime;
+    private float jumpCdTime;
 
     private float attackSecondTime;
 
@@ -58,23 +58,23 @@ public class PlayerController : MonoBehaviour {
         attackSecondTime = 0.0f;
 
 
-        playerStateMachine = new StateMachine(this.gameObject);
+        playerStateMachine = new StateMachine(gameObject);
 
-        idleState = StateManager.GetComponent<IdleState>();
-        walkState = StateManager.GetComponent<WalkRunState>();
-        jumpState = StateManager.GetComponent<JumpState>();
-        secondJump = StateManager.GetComponent<SecondJump>();
-        clampWallState = StateManager.GetComponent<ClampWallState>();
-        walkBackState = StateManager.GetComponent<WalkBackState>();
-        awayGroundState = StateManager.GetComponent<AwayGroundState>();
+        idleState = GetComponent<IdleState>();
+        walkState = GetComponent<WalkRunState>();
+        jumpState = GetComponent<JumpState>();
+        secondJump = GetComponent<SecondJump>();
+        clampWallState = GetComponent<ClampWallState>();
+        walkBackState = GetComponent<WalkBackState>();
+        awayGroundState = GetComponent<AwayGroundState>();
 
 
-        attackPreState = StateManager.GetComponent<AttackPreState>();
-        firstattackState = StateManager.GetComponent<FirstAttackState>();
-        secondAttackState = StateManager.GetComponent<SecondAttackState>();
-        thirdAttackState = StateManager.GetComponent<ThirdAttackState>();
-        forthAttackState = StateManager.GetComponent<ForthAttackState>();
-        fightIdleState = StateManager.GetComponent<FightIdleState>();
+        attackPreState = GetComponent<AttackPreState>();
+        firstattackState = GetComponent<FirstAttackState>();
+        secondAttackState = GetComponent<SecondAttackState>();
+        thirdAttackState = GetComponent<ThirdAttackState>();
+        forthAttackState = GetComponent<ForthAttackState>();
+        fightIdleState = GetComponent<FightIdleState>();
 
         CurrentState = idleState;
 
@@ -83,6 +83,8 @@ public class PlayerController : MonoBehaviour {
         ikActive = false;
 
         playerStateMachine.m_pCurrentState = idleState;
+
+        
     }
 
     private void FixedUpdate()
@@ -98,33 +100,37 @@ public class PlayerController : MonoBehaviour {
 
         //后退
 
-        if (Input.GetKeyUp(KeyCode.S))
-        {
-            GetComponent<Animator>().SetBool("WalkBack", false);
+        //if (Input.GetKeyUp(KeyCode.S))
+        //{
+        //    GetComponent<Animator>().SetBool("WalkBack", false);
 
-            GetComponent<Animator>().applyRootMotion = true;
+        //    GetComponent<Animator>().applyRootMotion = true;
 
-            GetComponent<Rigidbody>().velocity = Vector3.zero;
+        //    GetComponent<Rigidbody>().velocity = Vector3.zero;
 
-            playerStateMachine.m_pCurrentState = GameObject.Find("StateManager").GetComponent<IdleState>();
-        }
+        //    Debug.LogWarning("2223");
 
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            Speed = 0;
+        //    playerStateMachine.m_pCurrentState = GetComponent<IdleState>();
+        //}
 
-            if(playerStateMachine.m_pCurrentState.GetType() == typeof(IdleState)
-                ||
-            GetComponent<Animator>().GetCurrentAnimatorStateInfo(1).IsName("Swort Layer.IdletoFight")
-                )
-            {
-                playerStateMachine.ChangeState(walkBackState);
-            }
-        }
+        //if (Input.GetKey(KeyCode.S))
+        //{
+
+        //    if(playerStateMachine.m_pCurrentState.GetType() == typeof(IdleState)
+        //        ||
+        //    GetComponent<Animator>().GetCurrentAnimatorStateInfo(1).IsName("Swort Layer.IdletoFight")
+        //        ||
+        //        playerStateMachine.m_pCurrentState.GetType() == typeof(WalkRunState))
+        //    {
+        //        Speed = 0;
+
+        //        playerStateMachine.ChangeState(walkBackState);
+        //    }
+        //}
 
 
         //跑
-        if (Angle != 0 || Speed > 0)
+        if (Angle != 0 || Speed != 0)
         {
             if (playerStateMachine.m_pCurrentState.GetType() == typeof(JumpState)
                 || playerStateMachine.m_pCurrentState.GetType() == typeof(SecondJump)
@@ -134,6 +140,8 @@ public class PlayerController : MonoBehaviour {
             {
                 return;
             }
+
+
             playerStateMachine.ChangeState(walkState);
         }
 
@@ -172,6 +180,8 @@ public class PlayerController : MonoBehaviour {
                 playerStateMachine.ChangeState(forthAttackState);
             }
         }
+
+
     }
 
 
@@ -185,7 +195,7 @@ public class PlayerController : MonoBehaviour {
 
         //跳
 
-        if (Input.GetKeyDown(KeyCode.Space) && jumpCdTime > 0.25f)
+        if (Input.GetKeyDown(KeyCode.Space) && jumpCdTime > 0.15f)
         {
 
             if (Physics.Raycast(this.transform.position + Vector3.up * 0.4f, this.transform.forward
@@ -209,6 +219,8 @@ public class PlayerController : MonoBehaviour {
 
             else if (playerStateMachine.m_pCurrentState.GetType() == typeof(JumpState))
             {
+
+
                 playerStateMachine.ChangeState(secondJump);
 
             }
@@ -227,6 +239,7 @@ public class PlayerController : MonoBehaviour {
         {
 
             attackSecondTime = 0.0f;
+
 
             if (playerStateMachine.m_pCurrentState.GetType()
                  == typeof(SecondAttackState)
@@ -255,15 +268,10 @@ public class PlayerController : MonoBehaviour {
                 {
 
                     playerStateMachine.ChangeState(forthAttackState);
+
+                    Debug.LogWarning(playerStateMachine.m_pCurrentState);
                 }
             }
-
-            //else if (playerStateMachine.m_pCurrentState.GetType()
-            //    == typeof(ForthAttackState))
-            //{
-            //    playerStateMachine.ChangeState(secondAttackState);
-
-            //}
         }
 
         /// 收武器
@@ -293,8 +301,6 @@ public class PlayerController : MonoBehaviour {
             ||
             playerStateMachine.m_pCurrentState.GetType()
                 == typeof(WalkBackState))
-
-
             {
                 playerStateMachine.ChangeState(attackPreState);
             }
@@ -324,11 +330,11 @@ public class PlayerController : MonoBehaviour {
 
             jumpCdTime = 0.0f;
 
-            idleState.Enter(this.gameObject);
+            idleState.Enter(gameObject);
 
             playerStateMachine.m_pCurrentState = idleState;
 
-            SecondJump.count = 0;
+            GetComponent<SecondJump>().count = 0;
         }
     }
 

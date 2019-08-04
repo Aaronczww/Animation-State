@@ -4,18 +4,22 @@ using UnityEngine;
 
 public class RunToIdleState : State {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    private Animator playerAnimator;
+
+    public GameObject m_player;
+
+    private void Start()
+    {
+
+        m_player = this.gameObject;
+
+        playerAnimator = m_player.GetComponent<Animator>();
+    }
 
     public override void Enter(GameObject Player)
     {
+        playerAnimator = Player.GetComponent<Animator>();
+
         Player.GetComponent<Animator>().SetBool("RunToIdle", true);
 
         StartCoroutine(StateMachine.YieldAniFinish(Player.GetComponent<Animator>(), "Base Layer.RunToIdle", () => { Exit(); }, 0));
@@ -24,7 +28,7 @@ public class RunToIdleState : State {
 
     public override void Exit()
     {
-        GameObject.Find("Male").GetComponent<Animator>().SetBool("RunToIdle", false);
+        playerAnimator.SetBool("RunToIdle", false);
     }
 
     public override void Execute(GameObject Player)

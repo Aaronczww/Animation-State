@@ -4,10 +4,29 @@ using UnityEngine;
 
 public class FirstAttackState : State {
 
+    private StateMachine stateMachine;
+
+    private Animator playerAnimator;
+
+    private GameObject m_Player;
+
+    private void Start()
+    {
+        m_Player = this.gameObject;
+
+        playerAnimator = m_Player.GetComponent<Animator>();
+
+        stateMachine = m_Player.GetComponent<PlayerController>().playerStateMachine;
+    }
+
     public override void Enter(GameObject Player)
     {
 
         Player.GetComponent<Animator>().SetFloat("FirstAttack", 1.0f);
+
+
+        m_Player = Player;
+
 
         //StartCoroutine(StateMachine.YieldAniFinish(Player.GetComponent<Animator>(), "Attack Layer.Attact01A", () => { Exit(Player); },2));
     }
@@ -20,27 +39,20 @@ public class FirstAttackState : State {
     public override void Exit()
     {
 
-        if(PlayerController.playerStateMachine.m_pCurrentState.GetType() == typeof(FirstAttackState))
+        if(stateMachine.m_pCurrentState.GetType() == typeof(FirstAttackState))
         {
-            PlayerController.playerStateMachine.m_pCurrentState = GameObject.Find("StateManager").GetComponent<FightIdleState>();
+            stateMachine.m_pCurrentState = m_Player.GetComponent<FightIdleState>();
 
-            Debug.LogWarning("1");
+
         }
 
     }
 
     public void FirstFinish()
     {
-        GameObject.Find("Male").GetComponent<Animator>().SetFloat("FirstAttack", 0.0f);
+        playerAnimator = m_Player.GetComponent<Animator>();
+
+        playerAnimator.SetFloat("FirstAttack", 0.0f);
     }
 
-    void Start()
-    {
-
-    }
-
-    void Update()
-    {
-
-    }
 }

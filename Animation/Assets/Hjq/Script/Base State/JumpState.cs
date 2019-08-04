@@ -18,30 +18,33 @@ public class JumpState : State
 
     private IdleState idleState;
 
-    public static float secondJumpinterval;
- 
+    public float secondJumpinterval;
+
+
+    public GameObject m_player;
 
     private void Start()
     {
-        playerRigidBody = GameObject.Find("Male").GetComponent<Rigidbody>();
 
-        playerAnimator = GameObject.Find("Male").GetComponent<Animator>();
+        m_player = gameObject;
 
-        stateMachine = PlayerController.playerStateMachine;
-       
+        playerRigidBody = m_player.GetComponent<Rigidbody>();
+
+        playerAnimator = m_player.GetComponent<Animator>();
+
+        stateMachine = m_player.GetComponent<PlayerController>().playerStateMachine;
     }
 
     private void Awake()
     {
 
-        secondJump = this.GetComponent<SecondJump>();
+        secondJump = GetComponent<SecondJump>();
 
-        idleState = this.GetComponent<IdleState>();
+        idleState = GetComponent<IdleState>();
     }
 
     public override void Enter(GameObject Player)
     {
-
         ///奔跑时跳跃
         if (Player.GetComponent<PlayerController>().Speed > 0)
         {
@@ -60,6 +63,7 @@ public class JumpState : State
             
             || stateMachine.m_pPreviousState.GetType() == typeof(AttackPreState))
         {
+            secondJumpinterval = 0.0f;
 
             playerAnimator.SetBool("FirstJump", true);
 
@@ -68,8 +72,6 @@ public class JumpState : State
             playerRigidBody.velocity = new Vector3(0, 5, 0);
 
             StartCoroutine(StateMachine.YieldAniFinish(playerAnimator, "Base Layer.Jump01", () => { Exit(); },0));
-
-            secondJumpinterval = 0.0f;
 
         }
 

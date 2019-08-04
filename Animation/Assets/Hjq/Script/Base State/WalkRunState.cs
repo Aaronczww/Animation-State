@@ -10,15 +10,30 @@ public class WalkRunState : State
     float Speed = 0.0f;
     float Angle = 0.0f;
     private Animator playerAnimator;
+
+    private StateMachine playerStateMachine;
+
+    public GameObject m_player;
+
+    private void Start()
+    {
+
+        m_player = gameObject;
+
+        playerAnimator = m_player.GetComponent<Animator>();
+
+        playerStateMachine = m_player.GetComponent<PlayerController>().playerStateMachine;
+    }
+
     public override void Enter(GameObject Player)
     {
+
         if (Player.GetComponent<Animator>() != null)
         {
             playerAnimator = Player.GetComponent<Animator>();
         }
 
         Angle = Player.GetComponent<PlayerController>().Angle;
-
 
         if (PlayerController.speedUp)
         {
@@ -42,7 +57,7 @@ public class WalkRunState : State
 
         StartCoroutine(StateMachine.YieldAniFinish(Player.GetComponent<Animator>(), "Base Layer.BlendRun", () => { Exit(); }, 0));
 
-        if (Speed < 0.07f && PlayerController.playerStateMachine.m_pCurrentState.GetType() 
+        if (Speed < 0.07f && Player.GetComponent<PlayerController>().playerStateMachine.m_pCurrentState.GetType() 
             == typeof(WalkRunState)
             )
         {
@@ -66,20 +81,20 @@ public class WalkRunState : State
     {
         Angle = 0.0f;
 
-        if (GameObject.Find("Male").GetComponent<Animator>().GetFloat("Speed") < 0.01f)
+        if (playerAnimator.GetFloat("Speed") < 0.01f)
         {
             //if(PlayerController.speedUp)
             //{
             //}
 
             playerAnimator.SetBool("IdleToRun", false);
-            if (GameObject.Find("Male").GetComponent<Animator>().GetCurrentAnimatorStateInfo(1).IsName("Swort Layer.IdletoFight"))
+            if (playerAnimator.GetCurrentAnimatorStateInfo(1).IsName("Swort Layer.IdletoFight"))
             {
-                PlayerController.playerStateMachine.m_pCurrentState = GameObject.Find("StateManager").GetComponent<FightIdleState>();
+                playerStateMachine.m_pCurrentState = m_player.GetComponent<FightIdleState>();
             }
             else
             {
-                PlayerController.playerStateMachine.m_pCurrentState = GameObject.Find("StateManager").GetComponent<IdleState>();
+                playerStateMachine.m_pCurrentState = m_player.GetComponent<IdleState>();
 
             }
         }

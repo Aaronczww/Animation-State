@@ -234,7 +234,15 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.07526882
+        functionName: FightFinish
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: 0b19c3e5a7cb119448584b945a0618c1,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask:
       - path: 
         weight: 1

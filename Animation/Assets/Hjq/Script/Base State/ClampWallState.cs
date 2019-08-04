@@ -6,11 +6,18 @@ public class ClampWallState : State {
 
     private Animator playerAnimator;
 
+    private GameObject m_Player;
+
+    private void Start()
+    {
+        m_Player = gameObject;
+
+        playerAnimator = m_Player.GetComponent<Animator>();
+
+    }
+
     public override void Enter(GameObject Player)
     {
-
-
-        playerAnimator = Player.GetComponent<Animator>();
 
         playerAnimator.applyRootMotion = false;
 
@@ -36,17 +43,15 @@ public class ClampWallState : State {
     public void ExitVault()
     {
 
-        GameObject Player = GameObject.Find("Male");
+        m_Player.GetComponent<Animator>().applyRootMotion = true;
 
-        Player.GetComponent<Animator>().applyRootMotion = true;
+        m_Player.GetComponent<Animator>().SetBool("ClampWall", false);
 
-        Player.GetComponent<Animator>().SetBool("ClampWall", false);
+        m_Player.GetComponent<BoxCollider>().isTrigger = false;
 
-        Player.GetComponent<BoxCollider>().isTrigger = false;
+        m_Player.GetComponent<Rigidbody>().useGravity = true;
 
-        Player.GetComponent<Rigidbody>().useGravity = true;
-
-        PlayerController.playerStateMachine.m_pCurrentState = GameObject.Find("StateManager").GetComponent<IdleState>();
+        m_Player.GetComponent<PlayerController>().playerStateMachine.m_pCurrentState = m_Player.GetComponent<IdleState>();
     }
 
     public override void Execute(GameObject Player)

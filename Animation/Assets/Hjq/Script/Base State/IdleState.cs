@@ -8,6 +8,7 @@ using UnityEngine;
 public class IdleState : State
 {
     private Animator playerAnimator;
+
     public override void Enter(GameObject Player)
     {
         if (Player.GetComponent<Animator>() != null)

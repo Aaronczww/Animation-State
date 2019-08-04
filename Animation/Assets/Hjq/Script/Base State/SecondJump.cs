@@ -12,24 +12,25 @@ public class SecondJump : State
 
     private IdleState idleState;
 
-    private Ray ray;
-
-    private RaycastHit hitinfo;
-
     private bool _canJump;
 
-    public static int count = 0;
+    public int count = 0;
+
+    private GameObject m_player;
 
     private void Start()
     {
 
-        playerRigidBody = GameObject.Find("Male").GetComponent<Rigidbody>();
+        idleState = GetComponent<IdleState>();
 
-        playerAnimator = GameObject.Find("Male").GetComponent<Animator>();
+        m_player = gameObject;
 
-        stateMachine = PlayerController.playerStateMachine;
+        playerAnimator = m_player.GetComponent<Animator>();
 
-        idleState = this.GetComponent<IdleState>();
+        stateMachine = m_player.GetComponent<PlayerController>().playerStateMachine;
+
+        playerRigidBody = m_player.GetComponent<Rigidbody>();
+
 
     }
 
@@ -37,9 +38,9 @@ public class SecondJump : State
     {
         /// 二段跳只在上一个是跳跃的状态下触发
         if (stateMachine.m_pPreviousState.GetType() == typeof(JumpState) && count == 0
-            && JumpState.secondJumpinterval < 0.48f)
+            && Player.GetComponent<JumpState>().secondJumpinterval < 0.45f)
         {
-
+            Debug.LogWarning("二段跳");
             //Debug.LogWarning(playerAnimator.GetCurrentAnimatorStateInfo(0).IsName("Base Layer.Jump01"));
 
             playerAnimator.SetBool("SecondJump", true);
@@ -54,7 +55,7 @@ public class SecondJump : State
 
             _canJump = true;
 
-            JumpState.secondJumpinterval = 0.0f;
+            Player.GetComponent<JumpState>().secondJumpinterval = 0.0f;
 
         }
     }

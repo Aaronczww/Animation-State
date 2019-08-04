@@ -4,8 +4,25 @@ using UnityEngine;
 
 public class ThirdAttackState : State {
 
+    private StateMachine stateMachine;
+
+    private Animator playerAnimator;
+
+    private GameObject m_player;
+
+    private void Start()
+    {
+
+        m_player = this.gameObject;
+
+        playerAnimator = m_player.GetComponent<Animator>();
+
+        stateMachine = m_player.GetComponent<PlayerController>().playerStateMachine;
+    }
+
     public override void Enter(GameObject Player)
     {
+
         Player.GetComponent<Animator>().SetFloat("ThirdAttack", 3.0f);
 
     }
@@ -24,16 +41,15 @@ public class ThirdAttackState : State {
 
     public void ExitThird()
     {
-        if(PlayerController.playerStateMachine.m_pCurrentState.GetType() == typeof(ThirdAttackState))
+        if(stateMachine.m_pCurrentState.GetType() == typeof(ThirdAttackState))
         {
-            PlayerController.playerStateMachine.m_pCurrentState = GameObject.Find("StateManager").GetComponent<FightIdleState>();
+            stateMachine.m_pCurrentState = m_player.GetComponent<FightIdleState>();
 
-            Debug.LogWarning("3");
         }
     }
 
     public void ThirdFinish()
     {
-        GameObject.Find("Male").GetComponent<Animator>().SetFloat("ThirdAttack", 0.0f);
+        playerAnimator.SetFloat("ThirdAttack", 0.0f);
     }
 }

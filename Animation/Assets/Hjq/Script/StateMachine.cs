@@ -6,6 +6,9 @@ using UnityEngine.Events;
 public class StateMachine : MonoBehaviour
 {
     private GameObject m_pOwner;
+    private GameObject SecondPlayer;
+    private GameObject FirstPlayer;
+
     public State m_pCurrentState;
     public State m_pPreviousState;
     private State m_pGlobalState;
@@ -53,6 +56,7 @@ public class StateMachine : MonoBehaviour
         m_pPreviousState = m_pCurrentState;
         //m_pCurrentState.Exit(m_pOwner);
         m_pCurrentState = newState;
+
         m_pCurrentState.Enter(m_pOwner);
     }
 

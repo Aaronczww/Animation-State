@@ -4,24 +4,21 @@ using UnityEngine;
 
 public class WalkBackState : State {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    public GameObject m_player;
 
     public override void Enter(GameObject Player)
     {
-        Player.GetComponent<Animator>().SetBool("WalkBack", true);
 
         Player.GetComponent<Animator>().applyRootMotion = false;
 
-        Player.GetComponent<Rigidbody>().velocity = Player.transform.forward * -3;
+        Player.GetComponent<Rigidbody>().velocity = Player.transform.forward * -4;
 
+        Player.GetComponent<Rigidbody>().AddForce(Player.transform.forward * -3);
+
+        Player.GetComponent<Animator>().SetBool("WalkBack", true);
+
+        Debug.LogWarning(Player.GetComponent<Rigidbody>().velocity);
     }
 
     public override void Exit()

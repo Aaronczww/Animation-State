@@ -6,19 +6,24 @@ public class FightIdleState : State {
 
     private StateMachine stateMachine;
 
-    void Start()
+    private Animator playerAnimator;
+
+    private GameObject m_Player;
+
+    private void Start()
     {
-        stateMachine = PlayerController.playerStateMachine;
+        m_Player = this.gameObject;
+
+        playerAnimator = m_Player.GetComponent<Animator>();
+
+        stateMachine = m_Player.GetComponent<PlayerController>().playerStateMachine;
     }
+
     public override void Enter(GameObject Player)
     {
 
+
         Player.GetComponent<Animator>().SetBool("FightIdle", true);
-
-        //StartCoroutine(EarylyExit(Player));
-
-        StartCoroutine(StateMachine.YieldAniFinish(Player.GetComponent<Animator>(), "Swort Layer.IdleFight", () => { Exit(); },2));
-
 
     }
 
@@ -28,8 +33,15 @@ public class FightIdleState : State {
 
     public override void Exit()
     {
-        GameObject.Find("Male").GetComponent<Animator>().SetBool("FightIdle", false);
+    }
 
-        PlayerController.playerStateMachine.m_pCurrentState = GameObject.Find("StateManager").GetComponent<IdleState>();
+    public void IdleFinish()
+    {
+
+        playerAnimator = m_Player.GetComponent<Animator>();
+
+        playerAnimator.SetBool("FightIdle", false);
+
+        stateMachine.m_pCurrentState = m_Player.GetComponent<IdleState>();
     }
 }
